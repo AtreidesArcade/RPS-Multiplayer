@@ -46,7 +46,6 @@ database.ref("/players/").on("value", function(snapshot) {
 		$("#player1Stats").html("Win: " + player1.win + ", Loss: " + player1.loss + ", Tie: " + player1.tie);
 	} else {
 		console.log("Player 1 does NOT exist");
-
 		player1 = null;
 		player1Name = "";
 
@@ -59,7 +58,6 @@ database.ref("/players/").on("value", function(snapshot) {
 		$("#waitingNotice").html("");
 		$("#player1Stats").html("Win: 0, Loss: 0, Tie: 0");
 	}
-
 	// Check for existence of player 2 in the database
 	if (snapshot.child("player2").exists()) {
 		console.log("Player 2 exists");
@@ -141,7 +139,7 @@ database.ref("/chat/").on("child_added", function(snapshot) {
 	$("#chatDisplay").scrollTop($("#chatDisplay")[0].scrollHeight);
 });
 
-// Attach a listener to the database /turn/ node to listen for any changes
+// Attach a listener to the database /turn/ listen for any changes
 database.ref("/turn/").on("value", function(snapshot) {
 	// Check if it's player1's turn
 	if (snapshot.val() === 1) {
@@ -196,7 +194,6 @@ $("#add-name").on("click", function(event) {
 				tie: 0,
 				choice: ""
 			};
-
 			// Add player1 to the database
 			database.ref().child("/players/player1").set(player1);
 
@@ -260,7 +257,7 @@ $("#chat-send").on("click", function(event) {
 });
 
 // Monitor Player1's selection
-$("#playerPanel1").on("click", ".panelOption", function(event) {
+$("#playerPanel1").on("click", '.panelOption',function(event) {
 	event.preventDefault();
 
 	// Make selections only when both players are in the game
@@ -270,29 +267,34 @@ $("#playerPanel1").on("click", ".panelOption", function(event) {
 
 		// Record the player choice into the database
 		player1Choice = choice;
-		database.ref().child("/players/player1/choice").set(choice);
+		database.ref().child("players/player1/choice").set(choice);
 
 		// Set the turn value to 2, as it is now player2's turn
 		turn = 2;
 		database.ref().child("/turn").set(2);
 	}
+	console.log("click");
 });
-
 // Monitor Player2's selection
-$("#playerPanel2").on("click", ".panelOption", function(event) {
+$("#playerPanel2").on("click", '.panelOption', function(event) {
 	event.preventDefault();
 
 	// Make selections only when both players are in the game
+	console.log("turn 2: "+ player1, player2);
+	console.log(yourPlayerName === player2.name),
+	console.log(turn)
 	if (player1 && player2 && (yourPlayerName === player2.name) && (turn === 2) ) {
 		// Record player2's choice
 		var choice = $(this).text().trim();
 
 		// Record the player choice into the database
 		player2Choice = choice;
-		database.ref().child("/players/player2/choice").set(choice);
+		database.ref().child("players/player2/choice").set(choice);
 
 		// Compare player1 and player 2 choices and record the outcome
 		rpsCompare();
+	
+	console.log(player2Choice);
 	}
 });
 
@@ -375,4 +377,5 @@ function rpsCompare() {
 	// Set the turn value to 1, as it is now player1's turn
 	turn = 1;
 	database.ref().child("/turn").set(1);
+	console.log(turn);
 }
